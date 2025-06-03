@@ -19,4 +19,4 @@ consumer = KafkaConsumer(
 print("🟢 Waiting for earthquake alerts...")
 for message in consumer:
     gempa = message.value
-    print(f"\n🔔 EARTHQUAKE ALERT!\Lokasi: {gempa['Wilayah']}\nMagnitude: {gempa['Magnitude']}\nPotensi: {gempa['Potensi']}")
+    print(f"\n🔔 GEMPA TERKINI!\nLokasi: {gempa['Wilayah']}\nMagnitude: {gempa['Magnitude']}\nPotensi: {gempa['Potensi']}")
