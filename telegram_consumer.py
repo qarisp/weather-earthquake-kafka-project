@@ -27,5 +27,12 @@ def send_telegram_message(text):
 print("📨 Listening for Telegram alert messages...")
 for message in consumer:
     gempa = message.value
-    msg = f"🔔 GEMPA TERKINI\nWilayah: {gempa['Wilayah']}\nMagnitude: {gempa['Magnitude']}\nPotensi: {gempa['Potensi']}\nWaktu: {gempa['Tanggal']} {gempa['Jam']}\nData By BMKG"
+    msg = (
+        f"🔔 GEMPA TERKINI\n"
+        f"Wilayah: {gempa['Wilayah']}\n"
+        f"Magnitude: {gempa['Magnitude']}\n"
+        f"Potensi: {gempa['Potensi']}\n"
+        f"Waktu: {gempa['Tanggal']} {gempa['Jam']}\n\n"
+        f"📡 Data by BMKG ©"
+    )
     send_telegram_message(msg)
