@@ -6,6 +6,7 @@ import json
 load_dotenv()
 
 BOOTSTRAP_SERVER = os.getenv("BOOTSTRAP_SERVER")
+print(BOOTSTRAP_SERVER)
 
 consumer = KafkaConsumer(
     'bmkg_earthquakes',
