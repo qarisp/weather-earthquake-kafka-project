@@ -44,7 +44,7 @@ def transform(raw_data):
 
     clean_data = raw_data.copy(deep=True)
 
-    clean_data['Datetime'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+    clean_data['Datetime'] = datetime.now().replace(microsecond=0).isoformat()
 
     clean_data = clean_data[[
         'Datetime',

@@ -54,16 +54,17 @@ PROVINCES = [
 
 producer = KafkaProducer(
     bootstrap_servers=[BOOTSTRAP_SERVER],
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    value_serializer=lambda v: json.dumps(v.to_dict()).encode('utf-8')
 )
 
 while True:
     raw_data = extract(WEATHER_API, PROVINCES)
     clean_data = transform(raw_data)
 
-    for record in clean_data:
-        producer.send(KAFKA_TOPIC, value=record)
-        print(f"✅ Sent weather data for {record['Province']} to Kafka")
+    for index, row in clean_data.iterrows():
+        producer.send(KAFKA_TOPIC, value=row)
+        print(f"✅ Sent weather data for {row['Province']} to Kafka")
+
     producer.flush()
 
     print("🕒 Sleeping for 5 minutes...")

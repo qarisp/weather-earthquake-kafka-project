@@ -38,7 +38,7 @@ def insert_earthquake_event(gempa):
         print("❌ Error inserting to DynamoDB:", e)
 
 
-print("🟢 DynamoDB Consumer Started...")
+print("🟢 Earthquake DynamoDB Consumer Started...")
 for message in consumer:
     gempa = message.value
     insert_earthquake_event(gempa)

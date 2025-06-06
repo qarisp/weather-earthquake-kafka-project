@@ -3,11 +3,15 @@ import boto3
 import os
 from kafka import KafkaConsumer
 from dotenv import load_dotenv
-from datetime import datetime
+from decimal import Decimal
 
 load_dotenv()
 KAFKA_TOPIC = "weather_data"
 BOOTSTRAP_SERVER = os.getenv("BOOTSTRAP_SERVER")
+
+# Set Up DynamoDB
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('weather_data')
 
 consumer = KafkaConsumer(
     KAFKA_TOPIC,
@@ -17,31 +21,27 @@ consumer = KafkaConsumer(
     enable_auto_commit=True
 )
 
-# Set Up DynamoDB
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('weather_data')
-
-# Start consuming messages
-for message in consumer:
-    data = message.value
-    print("Received:", data)
+def insert_weather_data(weather):
+    item = {
+        'datetime': weather['Datetime'],
+        'province': weather['Province'],
+        'capital_city': weather['Capital City'],
+        'temperature': Decimal(str(weather['Temperature (C)'])),
+        'weather': weather['Weather'],
+        'humidity': str(weather['Humidity (%)']),
+        'pressure': str(weather['Pressure (Pa)']),
+        'wind_speed': Decimal(str(weather['Wind Speed (m/s)'])),
+        'lat': Decimal(str(weather['lat'])),
+        'lon': Decimal(str(weather['lon']))
+    }
 
     try:
-        item = {
-            'Province': data['Province'],
-            'Datetime': data['Datetime'],
-            'CapitalCity': data['Capital City'],
-            'TemperatureC': str(data['Temperature (C)']),
-            'Weather': data['Weather'],
-            'Humidity': str(data['Humidity']),
-            'Pressure': str(data['Pressure (Pa)']),
-            'Windspeed': str(data['Wind Speed (m/s)']),
-            'lat': str(data['lat']),
-            'lon': str(data['lon'])
-        }
-
         table.put_item(Item=item)
-        print(f"✅ Inserted {data['Province']} at {data['Datetime']} to DynamoDB")
-    
+        print("✅ Inserted into DynamoDB:", item['province'])
     except Exception as e:
-        print("❌ Error inserting into DynamoDB:", e)
+        print("❌ Error inserting to DynamoDB:", e)
+
+print("🟢 Weather DynamoDB Consumer Started...")
+for message in consumer:
+    weather = message.value
+    insert_weather_data(weather)
