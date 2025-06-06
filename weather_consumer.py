@@ -16,8 +16,9 @@ table = dynamodb.Table('weather_data')
 consumer = KafkaConsumer(
     KAFKA_TOPIC,
     bootstrap_servers=[BOOTSTRAP_SERVER],
+    group_id='weather-consumer',
     value_deserializer=lambda v: json.loads(v.decode('utf-8')),
-    auto_offset_reset='earliest',
+    auto_offset_reset='latest',
     enable_auto_commit=True
 )
 
