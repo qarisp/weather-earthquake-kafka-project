@@ -7,7 +7,7 @@ import boto3
 from datetime import datetime
 
 st.set_page_config(
-    page_title="Indonesia Weather Map",
+    page_title="Indonesia Weather & Earthquake Map",
     layout="wide",  # This makes the page full-width
     initial_sidebar_state="auto"
 )
