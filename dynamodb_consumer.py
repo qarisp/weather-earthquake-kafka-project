@@ -25,7 +25,9 @@ def insert_earthquake_event(gempa):
     item = {
         'id': f"{gempa['Tanggal']}T{gempa['Jam']}_{gempa['Wilayah']}",
         'wilayah': gempa['Wilayah'],
+        'koordinat': gempa['Coordinates'],
         'magnitude': Decimal(str(gempa['Magnitude'])),
+        'kedalaman': gempa['Kedalaman'],
         'potensi': gempa['Potensi'],
         'tanggal': gempa['Tanggal'],
         'jam': gempa['Jam'],

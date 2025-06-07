@@ -12,12 +12,22 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
+st.markdown("""
+    <style>
+    [data-testid="stSidebar"] {
+        min-width: 300px;
+        width: fit-content;
+        max-width: 100%;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Ensure session state is initialized
 if "refresh" not in st.session_state:
     st.session_state.refresh = False
 
 # Add the button and only trigger rerun when clicked
-if st.sidebar.button("🔄 Refresh Weather Data"):
+if st.sidebar.button("🔄 Refresh Weather & Earthquake Data"):
     st.session_state.refresh = True
 
 # Trigger rerun only once after button click
@@ -25,17 +35,50 @@ if st.session_state.refresh:
     st.session_state.refresh = False
     st.rerun()
 
-# ✅ Optional: show last refreshed time
-st.sidebar.markdown(f"Last refreshed: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+# Sidebar
+st.sidebar.markdown("Weather last refreshed:")
+st.sidebar.markdown(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+st.sidebar.markdown("")
 
 # Load weather data
-dymanodb = boto3.resource('dynamodb')
-table = dymanodb.Table('weather_data')
+dynamodb = boto3.resource('dynamodb')
+weather_table = dynamodb.Table('weather_data')
 
-response = table.scan()
-items = response['Items']
+weather_response = weather_table.scan()
+weather_items = weather_response['Items']
 
-df = pd.DataFrame(items)
+weather_df = pd.DataFrame(weather_items)
+
+# Load earthquake data
+earthquake_table = dynamodb.Table('EarthquakeAlerts')
+
+earthquake_response = earthquake_table.scan()
+earthquake_items = earthquake_response['Items']
+
+earthquake_df = pd.DataFrame(earthquake_items)
+
+st.sidebar.markdown("🔔 GEMPA TERKINI")
+latest_eq = earthquake_df.iloc[0]
+st.sidebar.markdown(f"""
+**Tanggal:** {latest_eq['tanggal']}\n
+**Jam:** {latest_eq['jam']}\n
+**Lokasi Gempa:** {latest_eq['wilayah']}\n
+**Magnitude:** {latest_eq['magnitude']}\n
+**Kedalaman:** {latest_eq['kedalaman']}\n
+""")
+
+# Parse earthquake coordinates
+def parse_coords(coord_str):
+    try:
+        lat, lon = map(float, coord_str.split(","))
+        return lat, lon
+    except:
+        return None, None
+
+earthquake_df["latitude"], earthquake_df["longitude"] = zip(*earthquake_df["koordinat"].apply(parse_coords))
+earthquake_df["magnitude"] = earthquake_df["magnitude"].astype(float)
+earthquake_df["radius"] = earthquake_df["magnitude"] * 10000  # Adjust scale as needed
+earthquake_df = earthquake_df.dropna(subset=["latitude", "longitude"])
 
 # Load GeoJSON province boundaries
 with open("indonesia-province-simple.json", "r", encoding="utf-8") as f:
@@ -52,7 +95,7 @@ def temperature_to_color(temp):
 
 # Create mapping from province to color
 province_colors = {}
-for _, row in df.iterrows():
+for _, row in weather_df.iterrows():
     province_name = row["province"].upper()
     temp = row["temperature"]
     province_colors[province_name] = temperature_to_color(temp)
@@ -64,7 +107,7 @@ for feature in provinces_geojson["features"]:
     feature["properties"]["color"] = color
 
     # Add weather data to properties (cast to JSON-safe types)
-    match = df[df["province"].str.upper() == province_name]
+    match = weather_df[weather_df["province"].str.upper() == province_name]
     if not match.empty:
         row = match.iloc[0]
         feature["properties"]["Temperature"] = float(row["temperature"])
@@ -72,13 +115,23 @@ for feature in provinces_geojson["features"]:
         feature["properties"]["Humidity"] = int(row["humidity"])
         feature["properties"]["Wind"] = float(row["wind_speed"])
 
-# Define the pydeck GeoJsonLayer
-layer = pdk.Layer(
+# Weather GeoJson layer
+weather_layer = pdk.Layer(
     "GeoJsonLayer",
     provinces_geojson,
     get_fill_color="properties.color",
     pickable=True,
     auto_highlight=True
+)
+
+# Earthquake scatterplot layer
+earthquake_layer = pdk.Layer(
+    "ScatterplotLayer",
+    data=earthquake_df,
+    get_position='[longitude, latitude]',
+    get_radius='radius',
+    get_fill_color='[255, 0, 0, 160]',
+    pickable=False
 )
 
 # Define the view state
@@ -89,22 +142,31 @@ view_state = pdk.ViewState(
 )
 
 # Streamlit UI
-st.title("🌡️ Indonesia Weather Map by Province")
+st.title("Indonesia Weather & Earthquake Map")
 
 # Show color legend
 st.markdown("""
 <div style="padding: 10px 0;">
-    <strong>Temperature Color Legend:</strong>
-    <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
-        <div style="width: 30px; height: 15px; background-color: rgb(0, 255, 0);"></div><span>Cool</span>
-        <div style="width: 30px; height: 15px; background-color: rgb(255, 165, 0);"></div><span>Warm</span>
-        <div style="width: 30px; height: 15px; background-color: rgb(255, 0, 0);"></div><span>Hot</span>
+    <strong>Legend:</strong>
+    <div style="display: flex; gap: 15px; align-items: center; margin-top: 5px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 5px;">
+            <div style="width: 30px; height: 15px; background-color: rgb(0, 255, 0);"></div><span>Cool</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+            <div style="width: 30px; height: 15px; background-color: rgb(255, 165, 0);"></div><span>Warm</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+            <div style="width: 30px; height: 15px; background-color: rgb(255, 0, 0);"></div><span>Hot</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+            <div style="width: 15px; height: 15px; background-color: red; border-radius: 50%;"></div><span>Earthquake</span>
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
 st.pydeck_chart(pdk.Deck(
-    layers=[layer],
+    layers=[weather_layer, earthquake_layer],
     initial_view_state=view_state,
     tooltip={
         "html": """
