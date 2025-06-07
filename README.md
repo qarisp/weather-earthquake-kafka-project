@@ -1,40 +1,73 @@
-🌏 Indonesia Weather & Earthquake Map
-A real-time, interactive Streamlit application that visualizes current weather conditions and recent earthquake activity across Indonesia. The application fetches live data from AWS DynamoDB tables and displays it on a map using PyDeck (Mapbox + WebGL).
+<h1 align="center">🌦️ Indonesia Weather & Earthquake Map</h1>
+<p align="center">
+  A Streamlit-based interactive map visualizing real-time weather and earthquake data across Indonesia, using AWS DynamoDB and Pydeck.
+</p>
 
-🚀 Features
-✅ Real-time weather visualization for each Indonesian province
+<hr/>
 
-✅ Live earthquake alerts with magnitude and depth visualization
+<h2>📌 Features</h2>
+<ul>
+  <li>Displays <strong>real-time weather</strong> data (temperature, humidity, wind, weather condition) by province</li>
+  <li>Visualizes <strong>earthquake alerts</strong> from across Indonesia with magnitude, depth, and location</li>
+  <li>Color-coded provinces by temperature (cool → warm → hot)</li>
+  <li>Hover tooltips showing detailed info per province and earthquake location</li>
+  <li>Manual data refresh via sidebar</li>
+</ul>
 
-✅ Hover tooltips with detailed meteorological and seismic data
+<h2>🗺️ Live Map Example</h2>
+<p align="center">
+  <img src="./screenshot.png" alt="Indonesia Weather Map Screenshot" width="100%" />
+</p>
 
-✅ Color-coded temperature map for quick climate assessment
+<h2>⚙️ Technologies Used</h2>
+<ul>
+  <li><strong>Python</strong> with <code>Streamlit</code> for frontend UI</li>
+  <li><strong>Pydeck</strong> (Deck.gl) for interactive mapping</li>
+  <li><strong>AWS DynamoDB</strong> to store weather and earthquake data</li>
+  <li><strong>Pandas</strong> and <strong>NumPy</strong> for data wrangling</li>
+  <li><strong>GeoJSON</strong> for province boundary mapping</li>
+</ul>
 
-✅ User-triggered data refresh button with last-updated timestamp
+<h2>🚀 Project Architecture</h2>
+<p align="center">
+  <img src="./A_diagram_illustrates_the_architecture_of_an_Indon.png" alt="Architecture Diagram" width="90%" />
+</p>
 
-✅ Built with Streamlit, PyDeck, and AWS DynamoDB
+<h2>📁 Folder Structure</h2>
 
-📸 Screenshot
-(Add your screenshot here)
+<pre>
+📦 indonesia-weather-map/
+├── 📄 app.py               # Main Streamlit app
+├── 📄 README.md            # Project documentation
+├── 📄 requirements.txt     # Python dependencies
+├── 📄 indonesia-province-simple.json  # GeoJSON boundaries
+└── 📸 screenshot.png       # App screenshot
+</pre>
 
-🏗️ Architecture
-The architecture of the project consists of the following components:
+<h2>🔧 Setup Instructions</h2>
 
-Frontend: Streamlit Web App
+<ol>
+  <li>Clone the repository:
+    <pre><code>git clone https://github.com/yourusername/indonesia-weather-map</code></pre>
+  </li>
+  <li>Install dependencies:
+    <pre><code>pip install -r requirements.txt</code></pre>
+  </li>
+  <li>Configure AWS credentials (required for accessing DynamoDB):<br/>
+    Ensure your environment has the necessary <code>AWS_ACCESS_KEY_ID</code> and <code>AWS_SECRET_ACCESS_KEY</code> variables or set up with AWS CLI.
+  </li>
+  <li>Run the app:
+    <pre><code>streamlit run app.py</code></pre>
+  </li>
+</ol>
 
-Backend:
+<h2>📝 Todo</h2>
+<ul>
+  <li>[ ] Add live weather API integration (e.g., OpenWeatherMap)</li>
+  <li>[ ] Improve mobile responsiveness</li>
+  <li>[ ] Add unit tests and CI/CD pipeline</li>
+</ul>
 
-Weather Data Source: Weather API (fetched and stored in DynamoDB)
-
-Earthquake Data Source: BMKG Earthquake Feed (fetched and stored in DynamoDB)
-
-Database: AWS DynamoDB
-
-weather_data Table: Stores latest weather data for each province
-
-EarthquakeAlerts Table: Stores recent earthquake alerts with location info
-
-Visualization: PyDeck with Mapbox for 3D map rendering
-
-GeoJSON: Indonesian province borders (indonesia-province-simple.json)
-
+<h2>📬 Contact</h2>
+<p>Feel free to reach out or contribute! Open an issue or fork the repo.</p>
+<p><strong>Author:</strong> <a href="https://github.com/yourusername">@yourusername</a></p>
