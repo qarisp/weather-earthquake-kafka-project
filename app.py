@@ -5,6 +5,13 @@ import json
 import numpy as np
 import boto3
 from datetime import datetime
+import os
+
+session = boto3.Session(
+    aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"],
+    aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"],
+    region_name=os.environ["AWS_DEFAULT_REGION"]
+)
 
 st.set_page_config(
     page_title="Indonesia Weather & Earthquake Map",
@@ -41,7 +48,7 @@ st.sidebar.markdown(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 st.sidebar.markdown("")
 
 # Load weather data
-dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
+dynamodb = session.resource('dynamodb', region_name='ap-southeast-1')
 weather_table = dynamodb.Table('weather_data')
 weather_response = weather_table.scan()
 weather_items = weather_response['Items']
