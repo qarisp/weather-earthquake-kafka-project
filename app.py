@@ -41,10 +41,8 @@ st.sidebar.markdown(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 st.sidebar.markdown("")
 
 # Load weather data
-boto3.setup_default_session(region_name='ap-southeast-1')
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
 weather_table = dynamodb.Table('weather_data')
-
 weather_response = weather_table.scan()
 weather_items = weather_response['Items']
 
@@ -52,7 +50,6 @@ weather_df = pd.DataFrame(weather_items)
 
 # Load earthquake data
 earthquake_table = dynamodb.Table('EarthquakeAlerts')
-
 earthquake_response = earthquake_table.scan()
 earthquake_items = earthquake_response['Items']
 
