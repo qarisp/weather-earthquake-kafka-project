@@ -34,6 +34,5 @@
 <p align="center">
   <img src="assets/img/architecture-diagram.jpg" alt="Architecture Diagram" width="90%" />
 </p>
-<p align="center"><em>Includes Kafka producer-consumer pipeline for weather data streaming</em></p>
 
 <p><strong>Author:</strong> <a href="https://github.com/qarisp">@qarisp</a></p>
