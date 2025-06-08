@@ -10,6 +10,7 @@ KAFKA_TOPIC = "weather_data"
 BOOTSTRAP_SERVER = os.getenv("BOOTSTRAP_SERVER")
 
 # Set Up DynamoDB
+boto3.setup_default_session(region_name='ap-southeast-1')
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('weather_data')
 

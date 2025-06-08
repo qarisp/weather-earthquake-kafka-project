@@ -41,6 +41,7 @@ st.sidebar.markdown(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 st.sidebar.markdown("")
 
 # Load weather data
+boto3.setup_default_session(region_name='ap-southeast-1')
 dynamodb = boto3.resource('dynamodb')
 weather_table = dynamodb.Table('weather_data')
 
