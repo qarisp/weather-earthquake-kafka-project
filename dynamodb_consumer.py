@@ -10,7 +10,7 @@ load_dotenv()
 BOOTSTRAP_SERVER = os.getenv("BOOTSTRAP_SERVER")
 
 dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')
-table = dynamodb.Table('EarthquakeAlerts')
+table = dynamodb.Table('earthquake_data')
 
 consumer = KafkaConsumer(
     'bmkg_earthquakes',

@@ -56,7 +56,7 @@ weather_items = weather_response['Items']
 weather_df = pd.DataFrame(weather_items)
 
 # Load earthquake data
-earthquake_table = dynamodb.Table('EarthquakeAlerts')
+earthquake_table = dynamodb.Table('earthquake_data')
 earthquake_response = earthquake_table.scan()
 earthquake_items = earthquake_response['Items']
 
