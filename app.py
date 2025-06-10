@@ -82,10 +82,6 @@ def parse_coords(coord_str):
     except:
         return None, None
 
-# earthquake_df["latitude"], earthquake_df["longitude"] = zip(*earthquake_df["koordinat"].apply(parse_coords))
-# earthquake_df["magnitude"] = earthquake_df["magnitude"].astype(float)
-# earthquake_df["radius"] = earthquake_df["magnitude"] * 10000  # Adjust scale as needed
-# earthquake_df = earthquake_df.dropna(subset=["latitude", "longitude"])
 latest_eq_lat, latest_eq_lon = parse_coords(latest_eq["koordinat"])
 latest_eq_data = {
     "latitude": latest_eq_lat,
