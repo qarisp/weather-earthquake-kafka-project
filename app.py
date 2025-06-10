@@ -72,7 +72,6 @@ st.sidebar.markdown(f"""
 **Lokasi Gempa:** {latest_eq['wilayah']}\n
 **Magnitude:** {latest_eq['magnitude']}\n
 **Kedalaman:** {latest_eq['kedalaman']}\n
-**Tes:** {type(latest_eq['timestamp'])}
 """)
 
 # Parse earthquake coordinates
