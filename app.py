@@ -132,7 +132,7 @@ weather_layer = pdk.Layer(
 # Earthquake scatterplot layer
 earthquake_layer = pdk.Layer(
     "ScatterplotLayer",
-    data=latest_eq,
+    data=earthquake_df,
     get_position='[longitude, latitude]',
     get_radius='radius',
     get_fill_color='[255, 0, 0, 160]',
