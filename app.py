@@ -80,10 +80,10 @@ def parse_coords(coord_str):
     except:
         return None, None
 
-earthquake_df["latitude"], earthquake_df["longitude"] = zip(*earthquake_df["koordinat"].apply(parse_coords))
-earthquake_df["magnitude"] = earthquake_df["magnitude"].astype(float)
-earthquake_df["radius"] = earthquake_df["magnitude"] * 10000  # Adjust scale as needed
-earthquake_df = earthquake_df.dropna(subset=["latitude", "longitude"])
+latest_eq["latitude"], latest_eq["longitude"] = zip(*latest_eq["koordinat"].apply(parse_coords))
+latest_eq["magnitude"] = latest_eq["magnitude"].astype(float)
+latest_eq["radius"] = latest_eq["magnitude"] * 10000  # Adjust scale as needed
+# earthquake_df = earthquake_df.dropna(subset=["latitude", "longitude"])
 
 # Load GeoJSON province boundaries
 with open("indonesia-province-simple.json", "r", encoding="utf-8") as f:
@@ -132,7 +132,7 @@ weather_layer = pdk.Layer(
 # Earthquake scatterplot layer
 earthquake_layer = pdk.Layer(
     "ScatterplotLayer",
-    data=earthquake_df,
+    data=latest_eq,
     get_position='[longitude, latitude]',
     get_radius='radius',
     get_fill_color='[255, 0, 0, 160]',
