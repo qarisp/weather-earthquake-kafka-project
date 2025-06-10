@@ -61,7 +61,7 @@ earthquake_response = earthquake_table.scan()
 earthquake_items = earthquake_response['Items']
 
 earthquake_df = pd.DataFrame(earthquake_items)
-earthquake_df = earthquake_df.sort_values(by='timestamp', ascending=False)
+earthquake_df = earthquake_df.sort_values(by='timestamp', ascending=True)
 
 st.sidebar.markdown("🔔 GEMPA TERKINI")
 latest_eq = earthquake_df.iloc[0]
@@ -71,6 +71,7 @@ st.sidebar.markdown(f"""
 **Lokasi Gempa:** {latest_eq['wilayah']}\n
 **Magnitude:** {latest_eq['magnitude']}\n
 **Kedalaman:** {latest_eq['kedalaman']}\n
+**Tes:** {type(latest_eq['timestamp'])}
 """)
 
 # Parse earthquake coordinates
