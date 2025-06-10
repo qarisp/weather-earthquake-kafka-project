@@ -61,7 +61,7 @@ earthquake_response = earthquake_table.scan()
 earthquake_items = earthquake_response['Items']
 
 earthquake_df = pd.DataFrame(earthquake_items)
-earthquake_df = earthquake_df.sort_values(by='timestamp', ascending=True)
+earthquake_df['timestamp'] = pd.to_datetime(earthquake_df['timestamp'])
 
 st.sidebar.markdown("🔔 GEMPA TERKINI")
 latest_eq = earthquake_df.iloc[0]
