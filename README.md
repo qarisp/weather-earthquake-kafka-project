@@ -20,6 +20,11 @@
   <img src="assets/img/map-example.png" alt="Indonesia Weather Map Screenshot" width="100%" />
 </p>
 
+<h2>📨 Telegram Alert Example</h2>
+<p align="center">
+  <img src="assets/img/alert-example.png" alt="Indonesia Weather Map Screenshot" width="100%" />
+</p>
+
 <h2>⚙️ Technologies Used</h2>
 <ul>
   <li><strong>Apache Kafka</strong> for weather & earthquake data streaming and ingestion</li>
